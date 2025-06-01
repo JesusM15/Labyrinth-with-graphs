@@ -15,27 +15,40 @@ public class MazeGenerator {
         String line = bufferedReader.readLine();
         Labyrinth labyrinth = new Labyrinth();
 
+        int contadorActual = 0;
         while(line != null){
-            if(!line.contains(":")){
+            System.out.println("Leyendo línea: " + line);
+
+            if(!line.trim().isEmpty() && !line.contains(":")){
                 String[] dimensions = line.split(",");
-                labyrinth.setRows(Integer.parseInt(dimensions[0]));
-                labyrinth.setCols(Integer.parseInt(dimensions[1]));
+                labyrinth.setRows(Integer.parseInt(dimensions[0].trim()));
+                labyrinth.setCols(Integer.parseInt(dimensions[1].trim()));
+
             }else {
                 String[] data = line.split(":");
 
-                String[] adjacends = data[1].split(",");
-
+                int nodeID = Integer.parseInt(data[0].trim());
+                System.out.println("Procesando nodo: " + nodeID);
                 Node node = labyrinth.getOrCreateNode(Integer.parseInt(data[0]));
 
-                // Agregar al nodo actual sus adyacentes
-                for(String adjacend : adjacends){
-                    if(Integer.parseInt(adjacend) > labyrinth.getCols()*labyrinth.getRows()-1){
-                        return null;
-                    }
-                    labyrinth.addEdge(node.getId(), Integer.parseInt(adjacend));
+                if (data.length > 1 && !data[1].trim().isEmpty()) {
+
+                    String[] adjacends = data[1].split(",");
+
+                     for(String adjacend : adjacends){
+                         int adjId = Integer.parseInt(adjacend.trim());
+                         if(adjId > labyrinth.getCols()*labyrinth.getRows()-1){
+                             return null;
+                         }
+                         labyrinth.addEdge(node.getId(), adjId);
+                     }
+
                 }
+
+
             }
             line = bufferedReader.readLine();
+            ++contadorActual;
         }
 
         return labyrinth;
