@@ -6,4 +6,5 @@ public class Main {
     public static void main(String[] args) throws IOException {
         MazeMenu menu = new MazeMenu(); // sdhkasj
     } // dsahjdksakd
+    // simon
 }
