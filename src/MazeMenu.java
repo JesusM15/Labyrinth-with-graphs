@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -121,7 +123,75 @@ public class MazeMenu {
      * Metodo para crear laberintos
      */
     private void buttonCrear() {
-        //Tenia pensado hacer que salga una ventana emergente donde le usuario hace las listas de adyacencia
+        JFrame frameCrear = new JFrame("Crear laberinto");
+        frameCrear.setLayout(new BorderLayout());
+        JPanel panelInfo = new JPanel();
+        panelInfo.setPreferredSize(new Dimension(500, 70));
+        JPanel panelTabla = new JPanel();
+
+        panelInfo.setLayout(null);
+        panelTabla.setLayout(new BorderLayout());
+
+        JLabel labelNodos = new JLabel("Cantidad de nodos");
+        labelNodos.setFont(new Font("Arial", Font.BOLD, 14));
+        labelNodos.setBounds(20,10,160,40);
+
+        JTextField textFieldNodos = new JTextField();
+        textFieldNodos.setBounds(170,18,130,25);
+
+        JSeparator linea = new JSeparator(SwingConstants.HORIZONTAL);
+        linea.setBackground(Color.gray);
+        linea.setBounds(16,50,550,30);
+
+
+        panelInfo.add(textFieldNodos);
+        panelInfo.add(labelNodos);
+        panelInfo.add(linea);
+        frameCrear.add(panelInfo, BorderLayout.NORTH);
+        frameCrear.add(panelTabla, BorderLayout.SOUTH);
+        frameCrear.setSize(new Dimension(600, 500));
+        frameCrear.setLocationRelativeTo(null);
+        frameCrear.setVisible(true);
+        frameCrear.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+
+        textFieldNodos.addActionListener(action -> {
+            String texto = textFieldNodos.getText();
+            int cantidadNodos = 0;
+
+            try {
+                cantidadNodos = Integer.parseInt(texto);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(null, "Por favor, ingresa un número válido.");
+            }
+
+            String[] columnas = {"Nodo", "Adyacentes"};
+            DefaultTableModel modelo = new DefaultTableModel(columnas, 0) {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return column == 1;
+                }
+            };
+
+            for (int i = 0; i < cantidadNodos; ++i) {
+                modelo.addRow(new Object[]{i + ":", ""});
+            }
+
+            JTable table = new JTable(modelo);
+            table.setRowHeight(25);
+            JScrollPane scrollPane = new JScrollPane(table);
+            table.getColumnModel().getColumn(0).setPreferredWidth(15);
+            table.getColumnModel().getColumn(1).setPreferredWidth(70);
+
+            DefaultTableCellRenderer centrar = new DefaultTableCellRenderer();
+            centrar.setHorizontalAlignment(SwingConstants.CENTER);
+
+            table.getColumnModel().getColumn(0).setCellRenderer(centrar);
+            table.getColumnModel().getColumn(1).setCellRenderer(centrar);
+
+            panelTabla.add(scrollPane, BorderLayout.CENTER);
+            frameCrear.pack();
+        });
     }
 
     private void buttonGenerar() {
@@ -147,9 +217,5 @@ public class MazeMenu {
 
             JOptionPane.showMessageDialog(null, "Archivo no encontrado", "Error", JOptionPane.ERROR_MESSAGE);
         }
-
-
     }
-
-
 }
