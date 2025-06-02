@@ -2,10 +2,12 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Node {
+public class Node implements Comparable<Node> {
     private int id;
     private List<Node> adjacencyList; // ejemplo, Nodo1 -> [Nodo2, Nodo3]
     private int x, y;
+    int heuristic;
+    int g;
 
     public Node(int id) {
         this.id = id;
@@ -24,6 +26,26 @@ public class Node {
     public Node(int id, List<Node> adjacencyList) {
         this.id = id;
         this.adjacencyList = adjacencyList;
+    }
+
+    public int getG() {
+        return g;
+    }
+
+    public void setG(int g) {
+        this.g = g;
+    }
+
+    public int getHeuristic() {
+        return heuristic;
+    }
+
+    public void setH(int h) {
+        this.heuristic = h;
+    }
+
+    public int getF() {
+        return g + heuristic;
     }
 
     public void addAdjacent(Node node){
@@ -54,5 +76,10 @@ public class Node {
 
     public void setX(int x) {
         this.x = x;
+    }
+
+    @Override
+    public int compareTo(Node node) {
+        return this.getF() - node.getF();
     }
 }
