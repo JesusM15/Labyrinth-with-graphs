@@ -1,3 +1,4 @@
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
@@ -60,12 +61,23 @@ public class GraphinLabyrinth extends JPanel  {
                     int posicionY = i * SIZE;
                     int posicionX = j * SIZE;
 
-                    g.setColor(Color.WHITE);
-                    g.fillRect(posicionX, posicionY, SIZE, SIZE);
+                    int bordersSize = 6;
                     g.setColor(Color.BLACK);
-                    g.drawRect(posicionX, posicionY, SIZE, SIZE);
+//                    g.drawRect(posicionX, posicionY, SIZE, SIZE);
+                    g.fillRect(posicionX, posicionY, SIZE + bordersSize, SIZE + bordersSize);
 
-                    verifyConexions(node, rows, columns, g, posicionX, posicionY, i, j);
+                    g.setColor(Color.WHITE);
+                    g.fillRect(posicionX + bordersSize, posicionY + bordersSize, SIZE - bordersSize, SIZE - bordersSize);
+
+                    if(node.getId() == 0){
+                        g.setColor(Color.GREEN);
+                        g.drawString("S", posicionX + SIZE / 2, posicionY + SIZE /2);
+                    }else if(node.getId() == labyrinth.getRows()*labyrinth.getCols()-1){
+                        g.setColor(Color.RED);
+                        g.drawString("E", posicionX + SIZE / 2, posicionY + SIZE / 2);
+                    }
+
+                    verifyConexions(node, rows, columns, g, posicionX, posicionY, i, j, bordersSize);
                 }
             }
         }
@@ -77,7 +89,7 @@ public class GraphinLabyrinth extends JPanel  {
      * camino libre
      * @param node
      */
-    private void verifyConexions(Node node, int rows, int cols, Graphics g, int posicionX, int posicionY, int i, int j) {
+    private void verifyConexions(Node node, int rows, int cols, Graphics g, int posicionX, int posicionY, int i, int j, int borderSize) {
         List<Node> adjacencyList = node.getAdjacencyList();
 
         //Para obtener la fila se necesita dividir el ID entre el numero de columnas y obtenemos la
@@ -90,55 +102,58 @@ public class GraphinLabyrinth extends JPanel  {
 
         int nodoIDInicio = 0;
         int nodoIDFinal = (rows * cols) - 1;
-        g.setColor(Color.WHITE);
+
+        g.setColor(Color.white);
 
         //Obtener la columna y fila nos permite obtener los nodos vecinos(arriba, abajo, izquierda, derecha)
         //Izquerda
         if (col > 0) {
             int left = node.getId() - 1;
-
             boolean connected = isConneted(adjacencyList, left);
             if (connected) {
-                g.drawLine(posicionX, posicionY, posicionX, posicionY + SIZE);
+                g.fillRect(posicionX, posicionY + borderSize, borderSize, SIZE - borderSize);
+//                    g.drawLine(posicionX + borderSize, posicionY, posicionX,   SIZE);
             }
         }
 
         //Derecha
         if (col < cols - 1) {
             int right = node.getId() + 1;
-
             boolean connected = isConneted(adjacencyList, right);
             if (connected) {
-                g.drawLine(posicionX + SIZE, posicionY, posicionX + SIZE, posicionY + SIZE);
+                g.fillRect(posicionX + SIZE, posicionY,  borderSize, SIZE - borderSize);
+//                g.drawLine(posicionX + SIZE, posicionY, posicionX + SIZE, posicionY + SIZE);
             }
         }
-
         //Abaj0
         if (row < rows - 1) {
             int down = node.getId() + cols;
 
             boolean connected = isConneted(adjacencyList, down);
             if (connected) {
-                g.drawLine(posicionX, posicionY + SIZE, posicionX + SIZE, posicionY + SIZE);
+                g.fillRect(posicionX + borderSize, posicionY + SIZE, SIZE - borderSize, borderSize);
+            //                g.drawLine(posicionX, posicionY + SIZE, posicionX + SIZE, posicionY + SIZE);
             }
         }
-
         //Arriba
         if (row > 0) {
             int up = node.getId() - cols;
 
             boolean connected = isConneted(adjacencyList, up);
             if (connected) {
-                g.drawLine(posicionX, posicionY, posicionX + SIZE, posicionY);
+                g.fillRect(posicionX + borderSize, posicionY, SIZE - borderSize, borderSize);
+//                            g.drawLine(posicionX, posicionY, posicionX + SIZE, posicionY);
             }
         }
 
         if (nodoIDInicio == node.getId()) {
-            g.drawLine(posicionX, posicionY, posicionX, posicionY + SIZE);
+            g.fillRect(posicionX, posicionY, posicionX, posicionY + SIZE + borderSize);
+//            g.drawLine(posicionX, posicionY, posicionX, posicionY + SIZE);
         }
 
         if (nodoIDFinal == node.getId()) {
-            g.drawLine(posicionX + SIZE, posicionY, posicionX + SIZE, posicionY + SIZE);
+            g.fillRect(posicionX + SIZE, posicionY, borderSize,  SIZE + borderSize);
+//            g.drawLine(posicionX + SIZE, posicionY, posicionX + SIZE, posicionY + SIZE);
         }
     }
 
