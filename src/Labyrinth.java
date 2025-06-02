@@ -56,6 +56,7 @@ public class Labyrinth {
             for (Node neighbor : entry.getValue().getAdjacencyList()) {
                 System.out.print(neighbor.getId() + " ");
             }
+            System.out.println(" X: " + entry.getValue().getX() + " Y: " + entry.getValue().getY());
             System.out.println();
         }
     }

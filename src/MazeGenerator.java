@@ -31,12 +31,18 @@ public class MazeGenerator {
                 System.out.println("Procesando nodo: " + nodeID);
                 Node node = labyrinth.getOrCreateNode(Integer.parseInt(data[0]));
 
+                int x = node.getId() % labyrinth.getCols();
+                int y = node.getId() / labyrinth.getCols();
+                node.setX(x);
+                node.setY(y);
+
                 if (data.length > 1 && !data[1].trim().isEmpty()) {
 
                     String[] adjacends = data[1].split(",");
 
                      for(String adjacend : adjacends){
                          int adjId = Integer.parseInt(adjacend.trim());
+
                          if(adjId > labyrinth.getCols()*labyrinth.getRows()-1){
                              return null;
                          }
