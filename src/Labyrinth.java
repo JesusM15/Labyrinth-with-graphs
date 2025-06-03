@@ -8,11 +8,15 @@ public class Labyrinth {
     public int getRows() {
         return rows;
     }
-
+    public Node getNodePos(int pos) {
+        return  labyrinth.get(pos);
+    }
     public void setRows(int rows) {
         this.rows = rows;
     }
-
+    public HashMap<Integer, Node> getLabyrinth() {
+        return labyrinth;
+    }
     public int getCols() {
         return cols;
     }
