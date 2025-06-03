@@ -1,4 +1,3 @@
-import com.sun.xml.internal.txw2.TXW;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
