@@ -26,7 +26,7 @@ public class LabyrinthSolver {
 
         openSet.add(startNode);
 
-        while(!openSet.isEmpty()) {
+        while (!openSet.isEmpty()) {
             Node currentNode = openSet.poll();
 
             if(currentNode == goalNode){
@@ -36,7 +36,6 @@ public class LabyrinthSolver {
             visitedNodes.add(currentNode);
 
             for(Node neighbor : currentNode.getAdjacencyList()){
-
                 int tempG = currentNode.getG() + 1;
 
                 if(tempG < neighbor.getG() || !visitedNodes.contains(neighbor)){
@@ -65,6 +64,59 @@ public class LabyrinthSolver {
         return null;
     }
 
+  public List<Node> bfs(Labyrinth labyrinth) {
+        Queue<Node> cola = new LinkedList<>();
+        List<Node> solution = new ArrayList<>();
+        Set<Node> visitados = new HashSet<>();
+        Node nodoInicial = labyrinth.getNode(0);
+        Node nodoFinal = labyrinth.getNode(labyrinth.getCols() * labyrinth.getRows() - 1);
+        Map<Node, Node> predecesor = new HashMap<>();
+
+        cola.add(nodoInicial);
+        visitados.add(nodoInicial);
+
+        boolean encontrado = false;
+        //recorremos el grafo hasta que todos los nodos sean visitados
+        while (!cola.isEmpty()) {
+            //sacamos da la cola los nodos desde donde recorreremos el grafo
+            Node actual = cola.poll();
+
+            if (actual.equals(nodoFinal)) {
+                encontrado = true;
+                break;
+            }
+            //verificaremos el nodo actual y sus adyacentes para si no fue visitado lo anadiremos a la cola
+            //y lo agraremos a la lista de visitado
+            for (Node vecino : actual.getAdjacencyList()) {
+                if (!visitados.contains(vecino)) {
+                    cola.add(vecino);
+                    visitados.add(vecino);
+                    // el predecesor lo ocupamos para poder reconstruir el camino despues
+                    predecesor.put(vecino, actual);
+                }
+            }
+        }
+        if (encontrado) {
+            List<Node> ruta = new ArrayList<>();
+            Node paso = nodoFinal;
+
+            while (paso != null) {
+                ruta.add(paso);
+                paso = predecesor.get(paso);
+            }
+
+            System.out.println("Ruta más corta:");
+            for (Node n : ruta) {
+                solution.add(n);
+                System.out.print(n.getId() + " ");
+            }
+            System.out.println();
+            return solution;
+        } else {
+            System.out.println("No se encontró una ruta al nodo final.");
+        }
+        return null;
+  }
     private ArrayList<Node> buildPath(HashMap<Node, Node> origins, Node goal){
         ArrayList<Node> path = new ArrayList<>();
         Node currentNode = goal;
@@ -83,4 +135,5 @@ public class LabyrinthSolver {
 
         return path;
     }
+  
 }
