@@ -1,3 +1,5 @@
+import com.sun.xml.internal.txw2.TXW;
+
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -219,9 +221,20 @@ public class MazeMenu {
             int cantidadNodos = 0;
 
             try {
-                String[] datos = texto.split("x");
-                rows = Integer.parseInt(datos[0]);
-                columns = Integer.parseInt(datos[1]);
+                String[] datos;
+
+                if (texto.contains("x")) {
+                    datos = texto.split("x");
+                    rows = Integer.parseInt(datos[0]);
+                    columns = Integer.parseInt(datos[1]);
+                } else if (texto.contains(",")) {
+                    datos = texto.split(",");
+                    rows = Integer.parseInt(datos[0]);
+                    columns = Integer.parseInt(datos[1]);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Por favor, envia un formato valido");
+                }
+
 
                 cantidadNodos = rows*columns;
             } catch (NumberFormatException ex) {
