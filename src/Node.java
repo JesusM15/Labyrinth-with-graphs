@@ -7,7 +7,7 @@ public class Node implements Comparable<Node> {
     private List<Node> adjacencyList; // ejemplo, Nodo1 -> [Nodo2, Nodo3]
     private int x, y;
     int heuristic;
-    int g;
+    int g = Integer.MAX_VALUE;
 
     public Node(int id) {
         this.id = id;
