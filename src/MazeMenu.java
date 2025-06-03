@@ -117,10 +117,54 @@ public class MazeMenu {
         labelTiempo.setBounds(31,300,350,200);
         labelTiempo.setText("<html>Dijkstra: <br>A*: <br>BFS: </html>");
 
+        JLabel labelSimbologia = new JLabel("Simbologia");
+        labelSimbologia.setFont(new Font("Arial", Font.BOLD, 14));
+        labelSimbologia.setBounds(165, 677, 350, 200);
+
+        JLabel labelColorD = new JLabel("Dijkstra");
+        labelColorD.setFont(new Font("Arial", Font.BOLD, 14));
+        labelColorD.setBounds(50, 775,100,50);
+
+        JLabel labelColorB = new JLabel("BFS");
+        labelColorB.setFont(new Font("Arial", Font.BOLD, 14));
+        labelColorB.setBounds(200, 775,100,50);
+
+        JLabel labelColorA = new JLabel("A*");
+        labelColorA.setFont(new Font("Arial", Font.BOLD, 14));
+        labelColorA.setBounds(340,775,100,50);
+
+        JSeparator lineaSimbologia = new JSeparator(SwingConstants.HORIZONTAL);
+        lineaSimbologia.setBackground(Color.darkGray);
+        lineaSimbologia.setBounds(31,750,350,30);
+
+        JLabel labelColorFULLB = new JLabel();
+        labelColorFULLB.setOpaque(true);
+        labelColorFULLB.setBackground(new Color(25, 255, 14, 128));
+        labelColorFULLB.setBounds(180, 793,15,15);
+
+        JLabel labelColorFULLD = new JLabel();
+        labelColorFULLD.setOpaque(true);
+        labelColorFULLD.setBackground(new Color(255, 0, 0, 128));
+        labelColorFULLD.setBounds(30, 793,15,15);
+
+        JLabel labelColorFULLA = new JLabel();
+        labelColorFULLA.setOpaque(true);
+        labelColorFULLA.setBackground(new Color(222, 14, 255, 128));
+        labelColorFULLA.setBounds(320,793,15,15);
+
+
 
 
         panelControl = new JPanel();
 
+        panelControl.add(labelColorFULLA);
+        panelControl.add(labelColorFULLD);
+        panelControl.add(labelColorFULLB);
+        panelControl.add(labelColorD);
+        panelControl.add(labelColorB);
+        panelControl.add(labelColorA);
+        panelControl.add(labelSimbologia);
+        panelControl.add(lineaSimbologia);
         panelControl.add(labelTiempo);
         panelControl.add(labelEnunciadoTiempos);
 //        panelControl.add(otraLinea);
