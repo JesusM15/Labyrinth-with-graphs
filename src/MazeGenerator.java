@@ -64,4 +64,40 @@ public class MazeGenerator {
 
         return labyrinth;
     }
+
+    public Labyrinth generateMazeFromGivenNodes(int rows, int columns, String[] adjancencyLists) {
+        Labyrinth labyrinth = new Labyrinth();
+        int nodeAmount = rows * columns;
+        System.out.println("FILAS: " + rows + " COLUMNAS: " + columns + " DESDE MAZEGENERATOR");
+        labyrinth.setRows(rows);
+        labyrinth.setCols(columns);
+
+        if (adjancencyLists.length == nodeAmount) {
+            for (int i = 0; i < adjancencyLists.length; i++) {
+                int nodeID = i;
+                Node node = labyrinth.getOrCreateNode(nodeID);
+
+                int x = node.getId() % labyrinth.getCols();
+                int y = node.getId() / labyrinth.getCols();
+                node.setX(x);
+                node.setY(y);
+
+                if (!adjancencyLists[i].trim().isEmpty()) {
+                    String[] adjancencyListOfCurrentNode = adjancencyLists[i].split(",");
+                    for (String adjacend : adjancencyListOfCurrentNode) {
+                        int adjId = Integer.parseInt(adjacend.trim());
+
+                        if(adjId > labyrinth.getCols()*labyrinth.getRows()-1){
+                            return null;
+                        }
+                        labyrinth.addEdge(node.getId(), adjId);
+                    }
+                }
+            }
+        } else {
+            return null;
+        }
+
+        return labyrinth;
+    }
 }

@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 
 public class MazeMenu {
     private GraphinLabyrinth gl;
+    private int rows, columns;
 
     LabyrinthSolver solver = new LabyrinthSolver();
     private JFrame frame;
@@ -15,6 +17,7 @@ public class MazeMenu {
     private JComboBox comboBoxAlgoritmos;
     private JButton buttonCrear, buttonGenerar;
     private JTextField textAreaArchivo;
+    private JTable table;
 
     public MazeMenu() {
         frame = new JFrame("Laberintos");
@@ -30,7 +33,7 @@ public class MazeMenu {
         buttonCrear.setBounds(230,115,150,25);
         buttonCrear.addActionListener(actionPerformed -> buttonCrear());
 
-        buttonGenerar = new JButton("Crear");
+        buttonGenerar = new JButton("Generar");
         buttonGenerar.setFocusPainted(false);
         buttonGenerar.setBounds(140,180,150,25);
         buttonGenerar.addActionListener(action -> buttonGenerar());
@@ -143,11 +146,17 @@ public class MazeMenu {
         JPanel panelInfo = new JPanel();
         panelInfo.setPreferredSize(new Dimension(500, 70));
         JPanel panelTabla = new JPanel();
+        JButton buttonCrearGrafo = new JButton("Crear");
+
+        buttonCrearGrafo.setFont(new Font("Arial", Font.BOLD, 14));
+        buttonCrearGrafo.setBounds(310,18,127,25);
+        buttonCrearGrafo.setEnabled(false);
+        buttonCrearGrafo.addActionListener(actPerformed -> buttonCrearGrafo());
 
         panelInfo.setLayout(null);
         panelTabla.setLayout(new BorderLayout());
 
-        JLabel labelNodos = new JLabel("Cantidad de nodos");
+        JLabel labelNodos = new JLabel("Filas x columnas");
         labelNodos.setFont(new Font("Arial", Font.BOLD, 14));
         labelNodos.setBounds(20,10,160,40);
 
@@ -159,6 +168,7 @@ public class MazeMenu {
         linea.setBounds(16,50,550,30);
 
 
+        panelInfo.add(buttonCrearGrafo);
         panelInfo.add(textFieldNodos);
         panelInfo.add(labelNodos);
         panelInfo.add(linea);
@@ -175,9 +185,13 @@ public class MazeMenu {
             int cantidadNodos = 0;
 
             try {
-                cantidadNodos = Integer.parseInt(texto);
+                String[] datos = texto.split("x");
+                rows = Integer.parseInt(datos[0]);
+                columns = Integer.parseInt(datos[1]);
+
+                cantidadNodos = rows*columns;
             } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(null, "Por favor, ingresa un número válido.");
+                JOptionPane.showMessageDialog(null, "Por favor, ingresa un numero valido");
             }
 
             String[] columnas = {"Nodo", "Adyacentes"};
@@ -192,7 +206,7 @@ public class MazeMenu {
                 modelo.addRow(new Object[]{i + ":", ""});
             }
 
-            JTable table = new JTable(modelo);
+            table = new JTable(modelo);
             table.setRowHeight(25);
             JScrollPane scrollPane = new JScrollPane(table);
             table.getColumnModel().getColumn(0).setPreferredWidth(15);
@@ -204,6 +218,27 @@ public class MazeMenu {
             table.getColumnModel().getColumn(0).setCellRenderer(centrar);
             table.getColumnModel().getColumn(1).setCellRenderer(centrar);
 
+            DefaultTableModel listener = (DefaultTableModel) table.getModel();
+            int finalCantidadNodos = cantidadNodos;
+            listener.addTableModelListener(hayDatos -> {
+
+                if (hayDatos.getType() == TableModelEvent.UPDATE) {
+                    for (int i = 0; i < finalCantidadNodos; i++) {
+                        Object datos = modelo.getValueAt(i, 1);
+                        String datoString = datos.toString();
+
+                        if (datoString.contains(",")) {
+
+                        } else {
+
+                        }
+                    }
+                    buttonCrearGrafo.setEnabled(true);
+                }
+
+            });
+
+            panelTabla.removeAll();
             panelTabla.add(scrollPane, BorderLayout.CENTER);
             frameCrear.pack();
         });
@@ -224,6 +259,7 @@ public class MazeMenu {
             maze = new MazeGenerator();
             labyrinth = maze.generateMazeFromCSV(ruta);
             gl = new GraphinLabyrinth(labyrinth);
+            panelMaze.removeAll();
             panelMaze.add(gl, BorderLayout.CENTER);
             maze.setLabyrinth(labyrinth);
             panelMaze.repaint();
@@ -232,5 +268,30 @@ public class MazeMenu {
 
             JOptionPane.showMessageDialog(null, "Archivo no encontrado", "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    /**
+     * Metodo que extrae los datos almacenados en la tabla que guarda los nodos adyacentes
+     */
+    private void buttonCrearGrafo() {
+        Labyrinth labyrinth;
+        MazeGenerator mazeGenerator = new MazeGenerator();
+        int cantidadNodos = rows * columns;
+
+        String[] adjancencyList = new String[cantidadNodos];
+        DefaultTableModel datosSacados = (DefaultTableModel) table.getModel();
+
+        for (int i = 0; i < cantidadNodos; i++) {
+            adjancencyList[i] = datosSacados.getValueAt(i, 1).toString();
+            adjancencyList[i] = adjancencyList[i].replace(" ","");
+        }
+
+        labyrinth = mazeGenerator.generateMazeFromGivenNodes(rows,columns, adjancencyList);
+        gl = new GraphinLabyrinth(labyrinth);
+
+        panelMaze.removeAll();
+        panelMaze.add(gl, BorderLayout.CENTER);
+        panelMaze.repaint();
+        panelMaze.revalidate();
     }
 }
