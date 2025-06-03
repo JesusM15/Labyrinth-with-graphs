@@ -59,8 +59,10 @@ public class MazeMenu {
         String[] algoritmos = {"Dijkstra", "BFS", "A*"};
         comboBoxAlgoritmos = new JComboBox(algoritmos);
         comboBoxAlgoritmos.setBounds(30,115,170,25);
-        comboBoxAlgoritmos.addActionListener(action -> algoritmoEscogido());
-
+        comboBoxAlgoritmos.addActionListener(action ->{
+                algoritmoEscogido();
+        }
+        );
         JSeparator linea = new JSeparator(SwingConstants.HORIZONTAL);
         linea.setBackground(Color.gray);
         linea.setBounds(31,70,350,30);
@@ -110,23 +112,27 @@ public class MazeMenu {
      */
     private void algoritmoEscogido()
     {
+        System.out.println("entre a seleccionar algoritmo");
+       ArrayList<Node> path;
         String algoritmo = (String) comboBoxAlgoritmos.getSelectedItem();
-
         switch (algoritmo) {
             case "Dijkstra":
                 break;
             case "A*":
-                ArrayList<Node> path = solver.AstarAlgorithm(gl.getLabyrinth());
+                path = solver.AstarAlgorithm(gl.getLabyrinth());
 
                 for(Node node : path){
                     System.out.print(node + ",");
                 }
-                gl.paintWithSolution(path);
                 System.out.println(" ");
                 break;
             case "BFS":
+                path = solver.bfs(labyrinth);
+
                 break;
         }
+        gl.paintWithSolution(path);
+
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -250,12 +256,12 @@ public class MazeMenu {
         panelMaze.setLayout(new BorderLayout());
 
         try {
-            MazeGenerator maze = new MazeGenerator();
-            Labyrinth labyrinth = maze.generateMazeFromCSV(ruta);
+            maze = new MazeGenerator();
+            labyrinth = maze.generateMazeFromCSV(ruta);
             gl = new GraphinLabyrinth(labyrinth);
-
             panelMaze.removeAll();
             panelMaze.add(gl, BorderLayout.CENTER);
+            maze.setLabyrinth(labyrinth);
             panelMaze.repaint();
             panelMaze.revalidate();
         } catch (FileNotFoundException e) {
