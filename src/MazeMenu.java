@@ -212,7 +212,7 @@ public class MazeMenu {
                     tiempos[index] = diff;
                     break;
             }
-            labelTiempo.setText("<html>BFS: " + tiempos[0] +"<br>Dijkstra: "+tiempos[1]+"<br>A*: "+tiempos[2]+"<br></html>");
+            labelTiempo.setText("<html>BFS: " + String.valueOf(tiempos[0] / 1000000) +"ms<br>Dijkstra: "+ (tiempos[1] / 1000000) +"ms<br>A*: "+(tiempos[2] / 1000000)+"ms<br></html>");
             gl.paintWithSolution(path, colors[index]);
         }
     }

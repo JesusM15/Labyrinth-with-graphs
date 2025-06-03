@@ -111,6 +111,7 @@ public class LabyrinthSolver {
                 System.out.print(n.getId() + " ");
             }
             System.out.println();
+            resetNodes(labyrinth);
             return solution;
         } else {
             System.out.println("No se encontró una ruta al nodo final.");
@@ -139,7 +140,7 @@ public class LabyrinthSolver {
         //Si usamos Dijkstra para laberintos no peude ser muy eficiente, ya que el peso de
         //sus aristas siempre seran 1, por lo tanto, para distinguir Dijkstra con BFS, se utilizo
         //la cola de prioridad, que esta realmente es utiliza para determinar la arista con mas peso.
-        PriorityQueue<Node> shortestNode = new PriorityQueue<>();
+        PriorityQueue<Node> shortestNode = new PriorityQueue<>(Comparator.comparingInt(n -> distances[n.getId()]));
 
         Node startNode = labyrinth.getNode(0);
         Node endNode = labyrinth.getNode(nodeAmount - 1);
