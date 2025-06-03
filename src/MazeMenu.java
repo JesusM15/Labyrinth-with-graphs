@@ -113,7 +113,7 @@ public class MazeMenu {
     private void algoritmoEscogido()
     {
         System.out.println("entre a seleccionar algoritmo");
-       ArrayList<Node> path;
+       ArrayList<Node> path = null;
         String algoritmo = (String) comboBoxAlgoritmos.getSelectedItem();
         switch (algoritmo) {
             case "Dijkstra":
@@ -127,7 +127,7 @@ public class MazeMenu {
                 System.out.println(" ");
                 break;
             case "BFS":
-                path = solver.bfs(labyrinth);
+                path = (ArrayList<Node>) solver.bfs(gl.getLabyrinth());
 
                 break;
         }
@@ -256,12 +256,11 @@ public class MazeMenu {
         panelMaze.setLayout(new BorderLayout());
 
         try {
-            maze = new MazeGenerator();
-            labyrinth = maze.generateMazeFromCSV(ruta);
+            MazeGenerator maze = new MazeGenerator();
+            Labyrinth labyrinth = maze.generateMazeFromCSV(ruta);
             gl = new GraphinLabyrinth(labyrinth);
-            panelMaze.removeAll();
             panelMaze.add(gl, BorderLayout.CENTER);
-            maze.setLabyrinth(labyrinth);
+
             panelMaze.repaint();
             panelMaze.revalidate();
         } catch (FileNotFoundException e) {
