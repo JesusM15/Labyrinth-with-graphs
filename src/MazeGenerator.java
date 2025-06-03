@@ -1,8 +1,12 @@
  import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+ import java.util.ArrayList;
+ import java.util.List;
+ import java.util.Random;
+ import java.util.Stack;
 
-public class MazeGenerator {
+ public class MazeGenerator {
     private Labyrinth labyrinth;
     public MazeGenerator() {
 
@@ -100,4 +104,87 @@ public class MazeGenerator {
 
         return labyrinth;
     }
-}
+
+     public Labyrinth generateMazeRandom(int difficult) {
+         Labyrinth labyrinth = new Labyrinth();
+         Random rand = new Random();
+         int cols = 0, rows = 0;
+
+         switch (difficult) {
+             case 0:
+                 cols = rand.nextInt(4) + 3; // 3 al 6
+                 rows = cols;
+                 break;
+             case 1:
+                 cols = rand.nextInt(7) + 6; // 6 al 12
+                 rows = cols;
+                 break;
+             case 2:
+                 cols = rand.nextInt(9) + 10; // 10 al 18
+                 rows = cols;
+                 break;
+             default:
+                 cols = rand.nextInt(7) + 6;
+                 rows = cols;
+         }
+
+         labyrinth.setCols(cols);
+         labyrinth.setRows(rows);
+         int totalNodes = rows * cols;
+
+         for (int i = 0; i < totalNodes; i++) {
+             Node node = labyrinth.getOrCreateNode(i);
+             int x = i % cols;
+             int y = i / cols;
+             node.setX(x);
+             node.setY(y);
+         }
+
+         boolean[] visitado = new boolean[totalNodes];
+         Stack<Integer> pila = new Stack<>();
+         pila.push(0);
+         visitado[0] = true;
+
+         while (!pila.isEmpty()) {
+             int actual = pila.peek();
+             Node nodoActual = labyrinth.getNode(actual);
+
+             List<Integer> vecinos = new ArrayList<>();
+
+             int x = nodoActual.getX();
+             int y = nodoActual.getY();
+
+             if (x > 0 && !visitado[actual - 1]) vecinos.add(actual - 1);
+             if (x < cols - 1 && !visitado[actual + 1]) vecinos.add(actual + 1);
+             if (y > 0 && !visitado[actual - cols]) vecinos.add(actual - cols);
+             if (y < rows - 1 && !visitado[actual + cols]) vecinos.add(actual + cols);
+
+             if (!vecinos.isEmpty()) {
+                 int elegido = vecinos.get(rand.nextInt(vecinos.size()));
+                 labyrinth.addEdge(actual, elegido);
+                 visitado[elegido] = true;
+                 pila.push(elegido);
+             } else {
+                 pila.pop();
+             }
+         }
+
+         for (int i = 0; i < totalNodes; i++) {
+             Node node = labyrinth.getNode(i);
+             int x = node.getX();
+             int y = node.getY();
+
+             // Conectar derecha con probabilidad
+             if (x < cols - 1 && rand.nextInt(5) == 0) { // 20% chance extra
+                 labyrinth.addEdge(i, i + 1);
+             }
+
+             // Conectar abajo con probabilidad
+             if (y < rows - 1 && rand.nextInt(5) == 0) {
+                 labyrinth.addEdge(i, i + cols);
+             }
+         }
+
+         return labyrinth;
+     }
+ }
