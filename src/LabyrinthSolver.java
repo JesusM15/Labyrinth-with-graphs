@@ -106,10 +106,10 @@ public class LabyrinthSolver {
             }
 
 //            System.out.println("Ruta más corta:");
-//            for (Node n : ruta) {
-//                solution.add(n);
+            for (Node n : ruta) {
+                solution.add(n);
 //                System.out.print(n.getId() + " ");
-//            }
+            }
 //            System.out.println();
             resetNodes(labyrinth);
             return solution;
