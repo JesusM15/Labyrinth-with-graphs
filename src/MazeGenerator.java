@@ -1,3 +1,4 @@
+ import java.awt.*;
  import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -94,6 +95,11 @@ import java.io.IOException;
                         if(adjId > labyrinth.getCols()*labyrinth.getRows()-1){
                             return null;
                         }
+
+                        if (!verifyConexions(node, labyrinth.getRows(), labyrinth.getCols(), adjId)) {
+                            return null;
+                        }
+
                         labyrinth.addEdge(node.getId(), adjId);
                     }
                 }
@@ -104,6 +110,50 @@ import java.io.IOException;
 
         return labyrinth;
     }
+
+     private boolean verifyConexions(Node node, int rows, int cols, int ID) {
+         List<Node> adjacentList = node.getAdjacencyList();
+         int nodeID = node.getId();
+
+         //Primer caso, desbordamiento de fila
+         if (ID < 0 || (ID > rows * cols - 1)) {
+             return false;
+
+         }
+
+         //Caso columna derecha
+         if ((ID+1) % cols == 1) {
+             if ((nodeID - 1) == ID || (nodeID - cols) == ID || (nodeID + cols) == ID) {
+                 return true;
+             }
+             //Caso columna izquierda
+         } else if ((ID+1) % cols == 0) {
+             if ((nodeID + 1) == ID || (nodeID - cols) == ID || (nodeID + cols) == ID) {
+                 return true;
+             }
+             //Caso normal
+         } else {
+             if ((nodeID - 1) == ID || (nodeID + 1) == ID || (nodeID - cols) == ID || (nodeID + cols) == ID) {
+                 return true;
+             }
+         }
+
+         return false;
+     }
+
+
+     private boolean isConneted(List<Node> adjancencyList, int ID) {
+         boolean connected = false;
+
+         for (Node neighboor : adjancencyList) {
+             if (neighboor.getId() == ID) {
+                 connected = true;
+                 break;
+             }
+         }
+
+         return connected;
+     }
 
      public Labyrinth generateMazeRandom(int difficult) {
          Labyrinth labyrinth = new Labyrinth();

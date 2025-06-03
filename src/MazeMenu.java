@@ -264,7 +264,7 @@ public class MazeMenu {
             String[] algoritmos = {"BFS", "Dijkstra", "A*"};
             int bestTime = 0;
             for(int i =0; i<tiempos.length; i++){
-                if(tiempos[i] < tiempos[bestTime]){
+                if(tiempos[i] < tiempos[bestTime] && tiempos[i] != 0 || tiempos[bestTime] == 0){
                     bestTime = i;
                 }
             }
@@ -469,12 +469,28 @@ public class MazeMenu {
             adjancencyList[i] = adjancencyList[i].replace(" ","");
         }
 
+
         labyrinth = mazeGenerator.generateMazeFromGivenNodes(rows,columns, adjancencyList);
+        if (labyrinth == null) {
+            JOptionPane.showMessageDialog(null, "Crea un laberinto valido", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        LabyrinthSolver solver = new LabyrinthSolver();
+
+        ArrayList<Node> labyrinthTemp = solver.AstarAlgorithm(labyrinth);
+
+        if (labyrinthTemp == null) {
+            JOptionPane.showMessageDialog(null, "Crea un laberinto valido", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+
         gl = new GraphinLabyrinth(labyrinth);
 
         panelMaze.removeAll();
         panelMaze.add(gl, BorderLayout.CENTER);
         panelMaze.repaint();
         panelMaze.revalidate();
+
     }
 }
