@@ -17,7 +17,7 @@ public class MazeMenu {
     LabyrinthSolver solver = new LabyrinthSolver();
     private JFrame frame;
     private JPanel panelMaze, panelControl;
-    private JComboBox comboBoxAlgoritmos;
+    private JComboBox comboBoxDificultades;
     private JButton buttonCrear, buttonGenerar, buttonSolve;
     private JTextField textAreaArchivo;
     private JTable table;
@@ -33,9 +33,12 @@ public class MazeMenu {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
 
+        JScrollPane scrollPane = new JScrollPane();
+
         panelMaze = new JPanel(new BorderLayout());
         panelMaze.setBorder(BorderFactory.createLineBorder(Color.darkGray, 5));
         panelMaze.setPreferredSize(new Dimension(1000,900));
+        panelMaze.add(scrollPane, BorderLayout.CENTER);
 
         buttonCrear = new JButton("Crear");
         buttonCrear.setFocusPainted(false);
@@ -66,12 +69,7 @@ public class MazeMenu {
         labelAlgoritmos.setBounds(30,80,180,40);
 
         String[] algoritmos = {"Dijkstra", "BFS", "A*"};
-//        comboBoxAlgoritmos = new JComboBox(algoritmos);
-//        comboBoxAlgoritmos.setBounds(30,115,170,25);
-//        comboBoxAlgoritmos.addActionListener(action ->{
-//                algoritmoEscogido();
-//        }
-//        );
+
         selectorAlgoritmos = new JList(algoritmos);
         selectorAlgoritmos.setBounds(30, 115, 170, 60);
         selectorAlgoritmos.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -80,6 +78,16 @@ public class MazeMenu {
         buttonSolve.setBounds(30, 180, 150, 25);
         buttonSolve.setFocusPainted(false);
         buttonSolve.addActionListener(action -> algoritmoEscogido());
+
+//
+//        String[] dificultades = {"Facil", "Media", "Dificil"};
+//        comboBoxDificultades = new JComboBox(dificultades);
+//        comboBoxDificultades.setBounds(30,220, 170,25);
+//        comboBoxDificultades.addActionListener(action ->{
+//                    dificultadElegida();
+//                }
+//        );
+
 
         JSeparator linea = new JSeparator(SwingConstants.HORIZONTAL);
         linea.setBackground(Color.gray);
@@ -95,18 +103,18 @@ public class MazeMenu {
 
         JSeparator otraLinea = new JSeparator(SwingConstants.HORIZONTAL);
         otraLinea.setBackground(Color.gray);
-        otraLinea.setBounds(31,220,350,30);
+        otraLinea.setBounds(31,260,350,30);
 
         JLabel labelEnunciadoTiempos = new JLabel("Tiempo de ejecucion");
         labelEnunciadoTiempos.setFont(new Font("Arial", Font.BOLD,14));
-        labelEnunciadoTiempos.setBounds(140,230,180,40);
+        labelEnunciadoTiempos.setBounds(140,260,180,40);
 
         labelTiempo = new JLabel();
         labelTiempo.setOpaque(true);
         labelTiempo.setFont(new Font("Arial", Font.BOLD,14));
         labelTiempo.setBackground(Color.WHITE);
         labelTiempo.setBorder(BorderFactory.createLineBorder(Color.darkGray, 5));
-        labelTiempo.setBounds(31,270,350,200);
+        labelTiempo.setBounds(31,300,350,200);
         labelTiempo.setText("<html>Dijkstra: <br>A*: <br>BFS: </html>");
 
 
@@ -115,7 +123,7 @@ public class MazeMenu {
 
         panelControl.add(labelTiempo);
         panelControl.add(labelEnunciadoTiempos);
-        panelControl.add(otraLinea);
+//        panelControl.add(otraLinea);
         panelControl.setBorder(BorderFactory.createLineBorder(Color.darkGray, 5));
         panelControl.setPreferredSize(new Dimension(400,900));
         panelControl.setLayout(null);
@@ -125,6 +133,7 @@ public class MazeMenu {
 
         panelControl.add(selectorAlgoritmos); // aqui lista
         panelControl.add(buttonSolve);
+//        panelControl.add(comboBoxDificultades);
 
         panelControl.add(labelAlgoritmos);
         panelControl.add(labelCrearLaberinto);
@@ -141,6 +150,9 @@ public class MazeMenu {
         frame.setSize(new Dimension(1400,900));
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+    }
+
+    private void dificultadElegida() {
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -328,6 +340,41 @@ public class MazeMenu {
     private void buttonGenerar() {
         //Tenia pensado hacer que salga una ventana emergente donde el usuario elige dificultad y se genera o algo asi,
         //aun no se
+        String[] opciones = { "Facil", "Media", "Dificil" };
+
+        String seleccion = (String) JOptionPane.showInputDialog(
+                null,
+                "Elige una dificultad",
+                "Facil",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                opciones,
+                opciones[0]
+        );
+
+        MazeGenerator mazeGenerator = new MazeGenerator();
+        int opc = 0;
+        if(seleccion.equals("Facil")) {
+            opc = 0;
+        }else if(seleccion.equals("Media")){
+            opc = 1;
+        }else if(seleccion.equals("Dificil")){
+            opc = 2;
+        }
+
+        panelMaze.removeAll();
+        panelMaze.setLayout(new BorderLayout());
+        Labyrinth labyrinth = mazeGenerator.generateMazeRandom(opc);
+        gl = new GraphinLabyrinth(labyrinth);
+
+        JScrollPane scrollPane = new JScrollPane(gl,
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        panelMaze.add(scrollPane, BorderLayout.CENTER);
+
+        panelMaze.repaint();
+        panelMaze.revalidate();
+
     }
 
     private void obtenerArchivo() throws IOException

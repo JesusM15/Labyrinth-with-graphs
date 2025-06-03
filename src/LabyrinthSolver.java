@@ -30,6 +30,7 @@ public class LabyrinthSolver {
             Node currentNode = openSet.poll();
 
             if(currentNode == goalNode){
+                resetNodes(labyrinth);
                 return buildPath(origin, goalNode);
             }
 
@@ -57,7 +58,6 @@ public class LabyrinthSolver {
 
             }
         }
-
 
         System.out.println("Manhattan distance: " + manhattanDistance);
 
@@ -185,6 +185,7 @@ public class LabyrinthSolver {
         //Por ultimo con ayuda de buildPath, generamos el camino mediante el uso de ArrayList de nodos, utilizando
         //el predecesor generado con el ultimo nodo
         solution = buildPath(predecessor, endNode);
+        resetNodes(labyrinth);
         return solution;
     }
 
@@ -207,5 +208,13 @@ public class LabyrinthSolver {
         return path;
     }
 
+    private void resetNodes(Labyrinth labyrinth) {
+        int totalNodes = labyrinth.getCols() * labyrinth.getRows();
+        for(int i = 0; i < totalNodes; i++){
+            Node node = labyrinth.getNode(i);
+            node.setG(Integer.MAX_VALUE);
+            node.setH(0);
+        }
+    }
   
 }

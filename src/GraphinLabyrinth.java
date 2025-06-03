@@ -11,7 +11,7 @@ public class GraphinLabyrinth extends JPanel  {
     //Atributos para la construccion del laberinto grafico, desde el laberinto y
     // el tamanio de cada celda
     private Labyrinth labyrinth;
-    private final int SIZE = 70;
+    private final int SIZE = 54;
 
     /**
      * Constructor con laberinto ya definido
