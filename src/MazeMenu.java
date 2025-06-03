@@ -4,11 +4,12 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MazeMenu {
-    private GraphinLabyrinth gl = null;
-    private MazeGenerator maze = null;
-    private Labyrinth labyrinth = null;
+    private GraphinLabyrinth gl;
+
+    LabyrinthSolver solver = new LabyrinthSolver();
     private JFrame frame;
     private JPanel panelMaze, panelControl;
     private JComboBox comboBoxAlgoritmos;
@@ -109,19 +110,26 @@ public class MazeMenu {
     private void algoritmoEscogido()
     {
         System.out.println("entre a seleccionar algoritmo");
+       ArrayList<Node> path;
         String algoritmo = (String) comboBoxAlgoritmos.getSelectedItem();
         switch (algoritmo) {
             case "Dijkstra":
                 break;
             case "A*":
+                path = solver.AstarAlgorithm(gl.getLabyrinth());
+
+                for(Node node : path){
+                    System.out.print(node + ",");
+                }
+                System.out.println(" ");
                 break;
             case "BFS":
-                LabyrinthSolver labyrinthl = new LabyrinthSolver();
-
-                labyrinthl.bfs(labyrinth);
+                path = solver.bfs(labyrinth);
 
                 break;
         }
+        gl.paintWithSolution(path);
+
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

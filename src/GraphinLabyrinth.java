@@ -2,6 +2,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 //Clase que modela el laberinto pero ya grafico
@@ -51,37 +52,86 @@ public class GraphinLabyrinth extends JPanel  {
 
         int rows = labyrinth.getRows();
         int columns = labyrinth.getCols();
+        int bordersSize = 6;
 
-        for (int i = 0; i < rows; ++i) {
-            for (int j = 0; j < columns; ++j) {
-                int ID = i * columns + j;
-                Node node = labyrinth.getNode(ID);
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setStroke(new BasicStroke(bordersSize));
+        g2.setColor(Color.WHITE);
+        g2.fillRect(0, 0, columns * SIZE, rows * SIZE);
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                int nodeID = i * columns + j;
+                Node node = labyrinth.getNode(nodeID);
 
                 if (node != null) {
-                    int posicionY = i * SIZE;
-                    int posicionX = j * SIZE;
+                    int x = j * SIZE;
+                    int y = i * SIZE;
 
-                    int bordersSize = 6;
-                    g.setColor(Color.BLACK);
-//                    g.drawRect(posicionX, posicionY, SIZE, SIZE);
-                    g.fillRect(posicionX, posicionY, SIZE + bordersSize, SIZE + bordersSize);
+                    verifyConexions(node, rows, columns, g2, x, y);
 
-                    g.setColor(Color.WHITE);
-                    g.fillRect(posicionX + bordersSize, posicionY + bordersSize, SIZE - bordersSize, SIZE - bordersSize);
-
-                    if(node.getId() == 0){
-                        g.setColor(Color.GREEN);
-                        g.drawString("S", posicionX + SIZE / 2, posicionY + SIZE /2);
-                    }else if(node.getId() == labyrinth.getRows()*labyrinth.getCols()-1){
-                        g.setColor(Color.RED);
-                        g.drawString("E", posicionX + SIZE / 2, posicionY + SIZE / 2);
+                    if (nodeID == 0) {
+                        g2.setColor(Color.GREEN);
+                        g2.drawString("S", x + SIZE / 3, y + SIZE / 2);
+                    } else if (nodeID == rows * columns - 1) {
+                        g2.setColor(Color.RED);
+                        g2.drawString("E", x + SIZE / 3, y + SIZE / 2);
                     }
 
-                    verifyConexions(node, rows, columns, g, posicionX, posicionY, i, j, bordersSize);
                 }
             }
         }
+    }
 
+    public void paintWithSolution(ArrayList<Node> pathSolution) {
+        Graphics g = this.getGraphics();
+        super.paintComponent(g);
+
+        int rows = labyrinth.getRows();
+        int columns = labyrinth.getCols();
+        int bordersSize = 6;
+
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setStroke(new BasicStroke(bordersSize));
+        g2.setColor(Color.WHITE);
+        g2.fillRect(0, 0, columns * SIZE, rows * SIZE);
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                int nodeID = i * columns + j;
+                Node node = labyrinth.getNode(nodeID);
+
+                if (node != null) {
+                    int x = j * SIZE;
+                    int y = i * SIZE;
+
+                    verifyConexions(node, rows, columns, g2, x, y);
+
+                    if(isOnArrayList(nodeID, pathSolution)){
+                        g.setColor(new Color(222, 14, 255, 128));
+                        g.fillRect(x, y , SIZE, SIZE);
+                    }
+
+                    if (nodeID == 0) {
+                        g2.setColor(Color.GREEN);
+                        g2.drawString("S", x + SIZE / 3, y + SIZE / 2);
+                    } else if (nodeID == rows * columns - 1) {
+                        g2.setColor(Color.RED);
+                        g2.drawString("E", x + SIZE / 3, y + SIZE / 2);
+                    }
+
+                }
+            }
+        }
+    }
+
+    private boolean isOnArrayList(int id, ArrayList<Node> pathSolution) {
+        for(Node node : pathSolution) {
+            if(id == node.getId()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -89,73 +139,33 @@ public class GraphinLabyrinth extends JPanel  {
      * camino libre
      * @param node
      */
-    private void verifyConexions(Node node, int rows, int cols, Graphics g, int posicionX, int posicionY, int i, int j, int borderSize) {
-        List<Node> adjacencyList = node.getAdjacencyList();
+    private void verifyConexions(Node node, int rows, int cols, Graphics2D g2, int x, int y) {
+        List<Node> adjacentList = node.getAdjacencyList();
+        int nodeID = node.getId();
 
-        //Para obtener la fila se necesita dividir el ID entre el numero de columnas y obtenemos la
-        //parte entera que es igual a la fila actual
+        g2.setColor(Color.BLACK);
 
-        //Para obtener la columna actual se ncesita obtener el modulo/residuo de el ID y el numero de columnas
-        //esto nos arroja la columna actual
-        int row = node.getId() / cols;
-        int col = node.getId() % cols;
-
-        int nodoIDInicio = 0;
-        int nodoIDFinal = (rows * cols) - 1;
-
-        g.setColor(Color.white);
-
-        //Obtener la columna y fila nos permite obtener los nodos vecinos(arriba, abajo, izquierda, derecha)
-        //Izquerda
-        if (col > 0) {
-            int left = node.getId() - 1;
-            boolean connected = isConneted(adjacencyList, left);
-            if (connected) {
-                g.fillRect(posicionX, posicionY + borderSize, borderSize, SIZE - borderSize);
-//                    g.drawLine(posicionX + borderSize, posicionY, posicionX,   SIZE);
-            }
+        // arriba
+        if (y == 0 || !isConneted(adjacentList, nodeID - cols)) {
+            g2.drawLine(x, y, x + SIZE, y);
         }
 
-        //Derecha
-        if (col < cols - 1) {
-            int right = node.getId() + 1;
-            boolean connected = isConneted(adjacencyList, right);
-            if (connected) {
-                g.fillRect(posicionX + SIZE, posicionY,  borderSize, SIZE - borderSize);
-//                g.drawLine(posicionX + SIZE, posicionY, posicionX + SIZE, posicionY + SIZE);
-            }
-        }
-        //Abaj0
-        if (row < rows - 1) {
-            int down = node.getId() + cols;
-
-            boolean connected = isConneted(adjacencyList, down);
-            if (connected) {
-                g.fillRect(posicionX + borderSize, posicionY + SIZE, SIZE - borderSize, borderSize);
-            //                g.drawLine(posicionX, posicionY + SIZE, posicionX + SIZE, posicionY + SIZE);
-            }
-        }
-        //Arriba
-        if (row > 0) {
-            int up = node.getId() - cols;
-
-            boolean connected = isConneted(adjacencyList, up);
-            if (connected) {
-                g.fillRect(posicionX + borderSize, posicionY, SIZE - borderSize, borderSize);
-//                            g.drawLine(posicionX, posicionY, posicionX + SIZE, posicionY);
-            }
+        // izzquierda
+        if (x == 0 || !isConneted(adjacentList, nodeID - 1)) {
+            g2.drawLine(x, y, x, y + SIZE);
         }
 
-        if (nodoIDInicio == node.getId()) {
-            g.fillRect(posicionX, posicionY, posicionX, posicionY + SIZE + borderSize);
-//            g.drawLine(posicionX, posicionY, posicionX, posicionY + SIZE);
+        // derecha
+        if (nodeID % cols == cols - 1 || !isConneted(adjacentList, nodeID + 1)) {
+            g2.drawLine(x + SIZE, y, x + SIZE, y + SIZE);
         }
 
-        if (nodoIDFinal == node.getId()) {
-            g.fillRect(posicionX + SIZE, posicionY, borderSize,  SIZE + borderSize);
-//            g.drawLine(posicionX + SIZE, posicionY, posicionX + SIZE, posicionY + SIZE);
+        // abajo
+        if (nodeID / cols == rows - 1 || !isConneted(adjacentList, nodeID + cols)) {
+            g2.drawLine(x, y + SIZE, x + SIZE, y + SIZE);
         }
     }
+
 
     /**
      * Metodo que verifica si un nodo actual esta conectado con un nodo vecino
@@ -174,6 +184,18 @@ public class GraphinLabyrinth extends JPanel  {
         }
 
         return connected;
+    }
+
+    private boolean isLastRow(int nodeId){
+        int row = nodeId / labyrinth.getCols();
+        System.out.println("row:" + row + "rows:" + labyrinth.getRows());
+        return row == labyrinth.getRows()-1;
+    }
+
+    private boolean isLastCol(int nodeId){
+        int col = nodeId % labyrinth.getCols();
+
+        return col == labyrinth.getCols()-1;
     }
 
     public Labyrinth getLabyrinth()
