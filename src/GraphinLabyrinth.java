@@ -83,9 +83,8 @@ public class GraphinLabyrinth extends JPanel  {
         }
     }
 
-    public void paintWithSolution(ArrayList<Node> pathSolution) {
+    public void paintWithSolution(ArrayList<Node> pathSolution, Color color) {
         Graphics g = this.getGraphics();
-        super.paintComponent(g);
 
         int rows = labyrinth.getRows();
         int columns = labyrinth.getCols();
@@ -93,24 +92,22 @@ public class GraphinLabyrinth extends JPanel  {
 
         Graphics2D g2 = (Graphics2D) g;
         g2.setStroke(new BasicStroke(bordersSize));
-        g2.setColor(Color.WHITE);
-        g2.fillRect(0, 0, columns * SIZE, rows * SIZE);
+//        g2.setColor(Color.WHITE);
+//        g2.fillRect(0, 0, columns * SIZE, rows * SIZE);
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
                 int nodeID = i * columns + j;
                 Node node = labyrinth.getNode(nodeID);
 
-                if (node != null) {
+                if (node != null && isOnArrayList(nodeID, pathSolution)) {
                     int x = j * SIZE;
                     int y = i * SIZE;
+                    g2.setColor(color);
+                    g2.fillRect(x, y, SIZE, SIZE);
 
+                    g2.setColor(Color.BLACK);
                     verifyConexions(node, rows, columns, g2, x, y);
-
-                    if(isOnArrayList(nodeID, pathSolution)){
-                        g.setColor(new Color(222, 14, 255, 128));
-                        g.fillRect(x, y , SIZE, SIZE);
-                    }
 
                     if (nodeID == 0) {
                         g2.setColor(Color.GREEN);
@@ -119,7 +116,6 @@ public class GraphinLabyrinth extends JPanel  {
                         g2.setColor(Color.RED);
                         g2.drawString("E", x + SIZE / 3, y + SIZE / 2);
                     }
-
                 }
             }
         }
