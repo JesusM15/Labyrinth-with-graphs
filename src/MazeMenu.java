@@ -162,37 +162,47 @@ public class MazeMenu {
         gl.paintComponent(gl.getGraphics());
         Color[] colors = { new Color(25, 255, 14, 128), new Color(255, 0, 0, 128),  new Color(222, 14, 255, 128)};
         int index = 0;
-
+        long tiempoInicio = 0;
+        long tiempoFinal = 0;
+        long diff = 0;
+        long[] tiempos = new long[3];
         for(String algoritmo : algoritmosSeleccionados){
             System.out.println("PRINT: " + index);
             switch (algoritmo) {
                 case "BFS":
                     index = 0;
+                    tiempoInicio = System.nanoTime();
                     path = (ArrayList<Node>) solver.bfs(gl.getLabyrinth());
+                    tiempoFinal = System.nanoTime();
+                    diff = tiempoFinal - tiempoInicio;
+                    tiempos[index] = diff;
                     break;
                 case "Dijkstra":
                     index = 1;
+                    tiempoInicio = System.nanoTime();
                     path = solver.dijkstraAlgorithm(gl.getLabyrinth());
+                    tiempoFinal = System.nanoTime();
+                    diff = tiempoFinal - tiempoInicio;
                     for(Node node : path){
                         System.out.print(node + ",");
                     }
-                    System.out.println(" ");
-                    labelTiempo.setText("<html>Dijkstra: <br>A*: <br>BFS: </html>");
+                    tiempos[index] = diff;
                     break;
                 case "A*":
                     index = 2;
+                    tiempoInicio = System.nanoTime();
                     path = solver.AstarAlgorithm(gl.getLabyrinth());
-
+                    tiempoFinal = System.nanoTime();
+                    diff = tiempoFinal - tiempoInicio;
                     for(Node node : path){
                         System.out.print(node + ",");
                     }
-                    System.out.println(" ");
+                    tiempos[index] = diff;
                     break;
             }
+            labelTiempo.setText("<html>BFS: " + tiempos[0] +"<br>Dijkstra: "+tiempos[1]+"<br>A*: "+tiempos[2]+"<br></html>");
             gl.paintWithSolution(path, colors[index]);
-
         }
-
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
