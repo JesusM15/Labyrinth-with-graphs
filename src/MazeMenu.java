@@ -6,6 +6,7 @@ import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MazeMenu {
     private GraphinLabyrinth gl;
@@ -16,10 +17,11 @@ public class MazeMenu {
     private JFrame frame;
     private JPanel panelMaze, panelControl;
     private JComboBox comboBoxAlgoritmos;
-    private JButton buttonCrear, buttonGenerar;
+    private JButton buttonCrear, buttonGenerar, buttonSolve;
     private JTextField textAreaArchivo;
     private JTable table;
     private JLabel labelTiempo;
+    private JList selectorAlgoritmos;
 
     public MazeMenu() {
         times = new double[3];
@@ -41,7 +43,7 @@ public class MazeMenu {
 
         buttonGenerar = new JButton("Generar");
         buttonGenerar.setFocusPainted(false);
-        buttonGenerar.setBounds(140,180,150,25);
+        buttonGenerar.setBounds(230,180,150,25);
         buttonGenerar.addActionListener(action -> buttonGenerar());
 
         JLabel labelArchivo = new JLabel("Introduce el archivo");
@@ -63,12 +65,21 @@ public class MazeMenu {
         labelAlgoritmos.setBounds(30,80,180,40);
 
         String[] algoritmos = {"Dijkstra", "BFS", "A*"};
-        comboBoxAlgoritmos = new JComboBox(algoritmos);
-        comboBoxAlgoritmos.setBounds(30,115,170,25);
-        comboBoxAlgoritmos.addActionListener(action ->{
-                algoritmoEscogido();
-        }
-        );
+//        comboBoxAlgoritmos = new JComboBox(algoritmos);
+//        comboBoxAlgoritmos.setBounds(30,115,170,25);
+//        comboBoxAlgoritmos.addActionListener(action ->{
+//                algoritmoEscogido();
+//        }
+//        );
+        selectorAlgoritmos = new JList(algoritmos);
+        selectorAlgoritmos.setBounds(30, 115, 170, 60);
+        selectorAlgoritmos.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+
+        buttonSolve = new JButton("Resolver");
+        buttonSolve.setBounds(30, 180, 150, 25);
+        buttonSolve.setFocusPainted(false);
+        buttonSolve.addActionListener(action -> algoritmoEscogido());
+
         JSeparator linea = new JSeparator(SwingConstants.HORIZONTAL);
         linea.setBackground(Color.gray);
         linea.setBounds(31,70,350,30);
@@ -79,7 +90,7 @@ public class MazeMenu {
 
         JLabel labelGenerarLaberinto = new JLabel("Generar laberinto");
         labelGenerarLaberinto.setFont(new Font("Arial", Font.BOLD,14));
-        labelGenerarLaberinto.setBounds(150,145,180,40);
+        labelGenerarLaberinto.setBounds(230,145,180,40);
 
         JSeparator otraLinea = new JSeparator(SwingConstants.HORIZONTAL);
         otraLinea.setBackground(Color.gray);
@@ -110,7 +121,10 @@ public class MazeMenu {
         panelControl.add(labelArchivo);
         panelControl.add(textAreaArchivo);
         panelControl.add(linea);
-        panelControl.add(comboBoxAlgoritmos);
+
+        panelControl.add(selectorAlgoritmos); // aqui lista
+        panelControl.add(buttonSolve);
+
         panelControl.add(labelAlgoritmos);
         panelControl.add(labelCrearLaberinto);
         panelControl.add(buttonCrear);
@@ -142,30 +156,41 @@ public class MazeMenu {
     {
         System.out.println("entre a seleccionar algoritmo");
        ArrayList<Node> path = null;
-        String algoritmo = (String) comboBoxAlgoritmos.getSelectedItem();
-        switch (algoritmo) {
-            case "Dijkstra":
-                path = solver.dijkstraAlgorithm(gl.getLabyrinth());
-                for(Node node : path){
-                    System.out.print(node + ",");
-                }
-                System.out.println(" ");
-                labelTiempo.setText("<html>Dijkstra: <br>A*: <br>BFS: </html>");
-                break;
-            case "A*":
-                path = solver.AstarAlgorithm(gl.getLabyrinth());
+//        String algoritmo = (String) comboBoxAlgoritmos.getSelectedItem();
+        List<String> algoritmosSeleccionados = selectorAlgoritmos.getSelectedValuesList();
+        gl.paintComponent(gl.getGraphics());
+        Color[] colors = { new Color(25, 255, 14, 128), new Color(255, 0, 0, 128),  new Color(222, 14, 255, 128)};
+        int index = 0;
 
-                for(Node node : path){
-                    System.out.print(node + ",");
-                }
-                System.out.println(" ");
-                break;
-            case "BFS":
-                path = (ArrayList<Node>) solver.bfs(gl.getLabyrinth());
+        for(String algoritmo : algoritmosSeleccionados){
+            System.out.println("PRINT: " + index);
+            switch (algoritmo) {
+                case "BFS":
+                    index = 0;
+                    path = (ArrayList<Node>) solver.bfs(gl.getLabyrinth());
+                    break;
+                case "Dijkstra":
+                    index = 1;
+                    path = solver.dijkstraAlgorithm(gl.getLabyrinth());
+                    for(Node node : path){
+                        System.out.print(node + ",");
+                    }
+                    System.out.println(" ");
+                    labelTiempo.setText("<html>Dijkstra: <br>A*: <br>BFS: </html>");
+                    break;
+                case "A*":
+                    index = 2;
+                    path = solver.AstarAlgorithm(gl.getLabyrinth());
 
-                break;
+                    for(Node node : path){
+                        System.out.print(node + ",");
+                    }
+                    System.out.println(" ");
+                    break;
+            }
+            gl.paintWithSolution(path, colors[index]);
+
         }
-        gl.paintWithSolution(path);
 
     }
 
