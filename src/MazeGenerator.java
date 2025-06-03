@@ -1,13 +1,18 @@
-import java.io.BufferedReader;
+ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
 public class MazeGenerator {
-
+    private Labyrinth labyrinth;
     public MazeGenerator() {
 
     }
-
+    public Labyrinth getLabyrinth() {
+        return labyrinth;
+    }
+    public void setLabyrinth(Labyrinth labyrinth) {
+        this.labyrinth = labyrinth;
+    }
     public Labyrinth generateMazeFromCSV(String file) throws IOException {
         FileReader fileReader = new FileReader(file);
         BufferedReader bufferedReader = new BufferedReader(fileReader);
@@ -59,5 +64,4 @@ public class MazeGenerator {
 
         return labyrinth;
     }
-
 }

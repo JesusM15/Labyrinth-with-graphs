@@ -6,8 +6,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class MazeMenu {
-    private GraphinLabyrinth gl;
-
+    private GraphinLabyrinth gl = null;
+    private MazeGenerator maze = null;
+    private Labyrinth labyrinth = null;
     private JFrame frame;
     private JPanel panelMaze, panelControl;
     private JComboBox comboBoxAlgoritmos;
@@ -54,8 +55,10 @@ public class MazeMenu {
         String[] algoritmos = {"Dijkstra", "BFS", "A*"};
         comboBoxAlgoritmos = new JComboBox(algoritmos);
         comboBoxAlgoritmos.setBounds(30,115,170,25);
-        comboBoxAlgoritmos.addActionListener(action -> algoritmoEscogido());
-
+        comboBoxAlgoritmos.addActionListener(action ->{
+                algoritmoEscogido();
+        }
+        );
         JSeparator linea = new JSeparator(SwingConstants.HORIZONTAL);
         linea.setBackground(Color.gray);
         linea.setBounds(31,70,350,30);
@@ -105,14 +108,18 @@ public class MazeMenu {
      */
     private void algoritmoEscogido()
     {
+        System.out.println("entre a seleccionar algoritmo");
         String algoritmo = (String) comboBoxAlgoritmos.getSelectedItem();
-
         switch (algoritmo) {
             case "Dijkstra":
                 break;
             case "A*":
                 break;
             case "BFS":
+                LabyrinthSolver labyrinthl = new LabyrinthSolver();
+
+                labyrinthl.bfs(labyrinth);
+
                 break;
         }
     }
@@ -206,11 +213,11 @@ public class MazeMenu {
         panelMaze.setLayout(new BorderLayout());
 
         try {
-            MazeGenerator maze = new MazeGenerator();
-            Labyrinth labyrinth = maze.generateMazeFromCSV(ruta);
+            maze = new MazeGenerator();
+            labyrinth = maze.generateMazeFromCSV(ruta);
             gl = new GraphinLabyrinth(labyrinth);
             panelMaze.add(gl, BorderLayout.CENTER);
-
+            maze.setLabyrinth(labyrinth);
             panelMaze.repaint();
             panelMaze.revalidate();
         } catch (FileNotFoundException e) {
