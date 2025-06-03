@@ -10,6 +10,7 @@ import java.util.ArrayList;
 public class MazeMenu {
     private GraphinLabyrinth gl;
     private int rows, columns;
+    double[] times;
 
     LabyrinthSolver solver = new LabyrinthSolver();
     private JFrame frame;
@@ -18,8 +19,13 @@ public class MazeMenu {
     private JButton buttonCrear, buttonGenerar;
     private JTextField textAreaArchivo;
     private JTable table;
+    private JLabel labelTiempo;
 
     public MazeMenu() {
+        times = new double[3];
+        for (int i = 0; i < 3; i++) {
+            times[i] = 0;
+        }
         frame = new JFrame("Laberintos");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
@@ -75,7 +81,29 @@ public class MazeMenu {
         labelGenerarLaberinto.setFont(new Font("Arial", Font.BOLD,14));
         labelGenerarLaberinto.setBounds(150,145,180,40);
 
+        JSeparator otraLinea = new JSeparator(SwingConstants.HORIZONTAL);
+        otraLinea.setBackground(Color.gray);
+        otraLinea.setBounds(31,220,350,30);
+
+        JLabel labelEnunciadoTiempos = new JLabel("Tiempo de ejecucion");
+        labelEnunciadoTiempos.setFont(new Font("Arial", Font.BOLD,14));
+        labelEnunciadoTiempos.setBounds(140,230,180,40);
+
+        labelTiempo = new JLabel();
+        labelTiempo.setOpaque(true);
+        labelTiempo.setFont(new Font("Arial", Font.BOLD,14));
+        labelTiempo.setBackground(Color.WHITE);
+        labelTiempo.setBorder(BorderFactory.createLineBorder(Color.darkGray, 5));
+        labelTiempo.setBounds(31,270,350,200);
+        labelTiempo.setText("<html>Dijkstra: <br>A*: <br>BFS: </html>");
+
+
+
         panelControl = new JPanel();
+
+        panelControl.add(labelTiempo);
+        panelControl.add(labelEnunciadoTiempos);
+        panelControl.add(otraLinea);
         panelControl.setBorder(BorderFactory.createLineBorder(Color.darkGray, 5));
         panelControl.setPreferredSize(new Dimension(400,900));
         panelControl.setLayout(null);
@@ -117,6 +145,12 @@ public class MazeMenu {
         String algoritmo = (String) comboBoxAlgoritmos.getSelectedItem();
         switch (algoritmo) {
             case "Dijkstra":
+                path = solver.dijkstraAlgorithm(gl.getLabyrinth());
+                for(Node node : path){
+                    System.out.print(node + ",");
+                }
+                System.out.println(" ");
+                labelTiempo.setText("<html>Dijkstra: <br>A*: <br>BFS: </html>");
                 break;
             case "A*":
                 path = solver.AstarAlgorithm(gl.getLabyrinth());
