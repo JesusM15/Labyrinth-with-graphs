@@ -2,10 +2,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MazeMenu {
     private GraphinLabyrinth gl;
 
+    LabyrinthSolver solver = new LabyrinthSolver();
     private JFrame frame;
     private JPanel panelMaze, panelControl;
     private JComboBox comboBoxAlgoritmos;
@@ -109,6 +111,13 @@ public class MazeMenu {
             case "Dijkstra":
                 break;
             case "A*":
+                ArrayList<Node> path = solver.AstarAlgorithm(gl.getLabyrinth());
+
+                for(Node node : path){
+                    System.out.print(node + ",");
+                }
+                gl.paintWithSolution(path);
+                System.out.println(" ");
                 break;
             case "BFS":
                 break;
