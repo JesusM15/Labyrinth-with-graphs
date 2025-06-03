@@ -105,12 +105,12 @@ public class LabyrinthSolver {
                 paso = predecesor.get(paso);
             }
 
-            System.out.println("Ruta más corta:");
-            for (Node n : ruta) {
-                solution.add(n);
-                System.out.print(n.getId() + " ");
-            }
-            System.out.println();
+//            System.out.println("Ruta más corta:");
+//            for (Node n : ruta) {
+//                solution.add(n);
+//                System.out.print(n.getId() + " ");
+//            }
+//            System.out.println();
             resetNodes(labyrinth);
             return solution;
         } else {
