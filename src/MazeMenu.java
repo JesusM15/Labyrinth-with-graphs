@@ -216,7 +216,15 @@ public class MazeMenu {
                     tiempos[index] = diff;
                     break;
             }
-            labelTiempo.setText("<html>BFS: " + tiempos[0] +"ns<br>Dijkstra: "+ tiempos[1] +"ns<br>A*: "+ tiempos[2]+"ns<br></html>");
+
+            String[] algoritmos = {"BFS", "Dijkstra", "A*"};
+            int bestTime = 0;
+            for(int i =0; i<tiempos.length; i++){
+                if(tiempos[i] < tiempos[bestTime]){
+                    bestTime = i;
+                }
+            }
+            labelTiempo.setText("<html><br>Mejor tiempo: " + algoritmos[bestTime] + "<br>BFS: " + tiempos[0] +"ns<br>Dijkstra: "+ tiempos[1] +"ns<br>A*: "+ tiempos[2]+"ns<br></html>");
             gl.paintWithSolution(path, colors[index]);
         }
     }
