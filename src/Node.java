@@ -82,4 +82,11 @@ public class Node implements Comparable<Node> {
     public int compareTo(Node node) {
         return this.getF() - node.getF();
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.id);
+        return sb.toString();
+    }
 }
