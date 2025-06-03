@@ -167,7 +167,7 @@ public class MazeMenu {
      */
     private void algoritmoEscogido()
     {
-        System.out.println("entre a seleccionar algoritmo");
+//        System.out.println("entre a seleccionar algoritmo");
        ArrayList<Node> path = null;
 //        String algoritmo = (String) comboBoxAlgoritmos.getSelectedItem();
         List<String> algoritmosSeleccionados = selectorAlgoritmos.getSelectedValuesList();
@@ -179,7 +179,7 @@ public class MazeMenu {
         long diff = 0;
         long[] tiempos = new long[3];
         for(String algoritmo : algoritmosSeleccionados){
-            System.out.println("PRINT: " + index);
+//            System.out.println("PRINT: " + index);
             switch (algoritmo) {
                 case "BFS":
                     index = 0;
@@ -188,6 +188,7 @@ public class MazeMenu {
                     tiempoFinal = System.nanoTime();
                     diff = tiempoFinal - tiempoInicio;
                     tiempos[index] = diff;
+                    System.out.println("BFS " + path.size());
                     break;
                 case "Dijkstra":
                     index = 1;
@@ -195,9 +196,10 @@ public class MazeMenu {
                     path = solver.dijkstraAlgorithm(gl.getLabyrinth());
                     tiempoFinal = System.nanoTime();
                     diff = tiempoFinal - tiempoInicio;
-                    for(Node node : path){
-                        System.out.print(node + ",");
-                    }
+//                    for(Node node : path){
+//                        System.out.print(node + ",");
+//                    }
+                    System.out.println("Dijkstra " + path.size());
                     tiempos[index] = diff;
                     break;
                 case "A*":
@@ -206,9 +208,11 @@ public class MazeMenu {
                     path = solver.AstarAlgorithm(gl.getLabyrinth());
                     tiempoFinal = System.nanoTime();
                     diff = tiempoFinal - tiempoInicio;
-                    for(Node node : path){
-                        System.out.print(node + ",");
-                    }
+//                    for(Node node : path){
+//                        System.out.print(node + ",");
+//                    }
+//                    System.out.println(" ");
+                    System.out.println("A* " + path.size());
                     tiempos[index] = diff;
                     break;
             }
