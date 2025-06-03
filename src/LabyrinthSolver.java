@@ -36,7 +36,6 @@ public class LabyrinthSolver {
             visitedNodes.add(currentNode);
 
             for(Node neighbor : currentNode.getAdjacencyList()){
-//                if(visitedNodes.contains(neighbor)) continue;
 
                 int tempG = currentNode.getG() + 1;
 
@@ -48,7 +47,11 @@ public class LabyrinthSolver {
 
                     origin.put(neighbor, currentNode);
                     visitedNodes.add(neighbor);
+
                     if(!openSet.contains(neighbor)){
+                        openSet.add(neighbor);
+                    }else {
+                        openSet.remove(neighbor);
                         openSet.add(neighbor);
                     }
                 }
