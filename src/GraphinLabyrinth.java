@@ -147,12 +147,12 @@ public class GraphinLabyrinth extends JPanel  {
         }
 
         // izzquierda
-        if (x == 0 || !isConneted(adjacentList, nodeID - 1)) {
+        if ((nodeID != 0) && (x == 0 || !isConneted(adjacentList, nodeID - 1))) {
             g2.drawLine(x, y, x, y + SIZE);
         }
 
         // derecha
-        if (nodeID % cols == cols - 1 || !isConneted(adjacentList, nodeID + 1)) {
+        if ((nodeID != cols*rows-1) &&  (nodeID % cols == cols - 1 || !isConneted(adjacentList, nodeID + 1))) {
             g2.drawLine(x + SIZE, y, x + SIZE, y + SIZE);
         }
 
@@ -160,6 +160,7 @@ public class GraphinLabyrinth extends JPanel  {
         if (nodeID / cols == rows - 1 || !isConneted(adjacentList, nodeID + cols)) {
             g2.drawLine(x, y + SIZE, x + SIZE, y + SIZE);
         }
+
     }
 
 
