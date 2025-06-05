@@ -48,7 +48,13 @@ public class MazeMenu {
         buttonGenerar = new JButton("Generar");
         buttonGenerar.setFocusPainted(false);
         buttonGenerar.setBounds(230,180,150,25);
-        buttonGenerar.addActionListener(action -> buttonGenerar());
+        buttonGenerar.addActionListener(action -> {
+            try {
+                buttonGenerar();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         JLabel labelArchivo = new JLabel("Introduce el archivo");
         labelArchivo.setFont(new Font("Arial", Font.BOLD,15));
@@ -393,7 +399,7 @@ public class MazeMenu {
         });
     }
 
-    private void buttonGenerar() {
+    private void buttonGenerar() throws IOException {
         //Tenia pensado hacer que salga una ventana emergente donde el usuario elige dificultad y se genera o algo asi,
         //aun no se
         String[] opciones = { "Facil", "Media", "Dificil" };
@@ -412,6 +418,7 @@ public class MazeMenu {
         int opc = 0;
         if(seleccion.equals("Facil")) {
             opc = 0;
+
         }else if(seleccion.equals("Media")){
             opc = 1;
         }else if(seleccion.equals("Dificil")){

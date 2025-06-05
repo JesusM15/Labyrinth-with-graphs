@@ -1,11 +1,10 @@
  import java.awt.*;
  import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.IOException;
- import java.util.ArrayList;
+ import java.io.FileWriter;
+ import java.io.IOException;
+ import java.util.*;
  import java.util.List;
- import java.util.Random;
- import java.util.Stack;
 
  public class MazeGenerator {
     private Labyrinth labyrinth;
@@ -37,9 +36,9 @@ import java.io.IOException;
             }else {
                 String[] data = line.split(":");
 
-                int nodeID = Integer.parseInt(data[0].trim());
+                int nodeID = Integer.parseInt(data[0].replaceAll(" ", "").trim());
                 System.out.println("Procesando nodo: " + nodeID);
-                Node node = labyrinth.getOrCreateNode(Integer.parseInt(data[0]));
+                Node node = labyrinth.getOrCreateNode(Integer.parseInt(data[0].replaceAll(" ", "").trim()));
 
                 int x = node.getId() % labyrinth.getCols();
                 int y = node.getId() / labyrinth.getCols();
@@ -155,22 +154,22 @@ import java.io.IOException;
          return connected;
      }
 
-     public Labyrinth generateMazeRandom(int difficult) {
+     public Labyrinth generateMazeRandom(int difficult) throws IOException {
          Labyrinth labyrinth = new Labyrinth();
          Random rand = new Random();
          int cols = 0, rows = 0;
 
          switch (difficult) {
              case 0:
-                 cols = rand.nextInt(4) + 3; // 3 al 6
+                 cols = rand.nextInt(4) + 3;
                  rows = cols;
                  break;
              case 1:
-                 cols = rand.nextInt(7) + 6; // 6 al 12
+                 cols = rand.nextInt(7) + 6;
                  rows = cols;
                  break;
              case 2:
-                 cols = rand.nextInt(9) + 10; // 10 al 18
+                 cols = rand.nextInt(9) + 10;
                  rows = cols;
                  break;
              default:
@@ -224,16 +223,36 @@ import java.io.IOException;
              int x = node.getX();
              int y = node.getY();
 
-             // Conectar derecha con probabilidad
-             if (x < cols - 1 && rand.nextInt(5) == 0) { // 20% chance extra
+             if (x < cols - 1 && rand.nextInt(5) == 0) {
                  labyrinth.addEdge(i, i + 1);
              }
 
-             // Conectar abajo con probabilidad
              if (y < rows - 1 && rand.nextInt(5) == 0) {
                  labyrinth.addEdge(i, i + cols);
              }
+
+
          }
+
+         FileWriter fileWriter = new FileWriter("aleatorio");
+         fileWriter.write(rows + "," + cols + "\n");
+         //File writer
+         for (int i = 0; i < totalNodes; i++) {
+             Node node = labyrinth.getNode(i);
+             StringBuilder builder = new StringBuilder();
+             builder.append(node.getId() + ":");
+             for (Node neighbor : node.getAdjacencyList()) {
+                 builder.append(neighbor + ",");
+             }
+             String nodeLine = builder.toString();
+             nodeLine = nodeLine.substring(0, nodeLine.length() - 1);
+             nodeLine += "\n";
+
+
+             fileWriter.write(nodeLine);
+
+         }
+         fileWriter.close();
 
          return labyrinth;
      }
