@@ -207,11 +207,6 @@ public class MazeMenu {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    //La clase GraphinLabyrinth ya tiene los metodos getters y setters del laberitno para que puedan resolverlo mediante
-    //el algoritmo.
-    //Ademas para representar ese arbol o grafo(no se que salida genera el algoritmo) del camino para resolver el laberinto
-    //se puede hacer directamente aqui utilizando el parametro g de GraphinLabyrinth, o hacer un metodo en GraphinLabyrinth que nomas tome la salida
-    //del algoritmo y ahi mismo pinte el camino.
     /**
      * Metodo que resolvera el algoritmo en cuestion
      */
@@ -399,9 +394,11 @@ public class MazeMenu {
         });
     }
 
+    /**
+     * Metodo que permite generar aleatoriamiente un laberinto
+     * @throws IOException
+     */
     private void buttonGenerar() throws IOException {
-        //Tenia pensado hacer que salga una ventana emergente donde el usuario elige dificultad y se genera o algo asi,
-        //aun no se
         String[] opciones = { "Facil", "Media", "Dificil" };
 
         String seleccion = (String) JOptionPane.showInputDialog(
@@ -440,6 +437,10 @@ public class MazeMenu {
 
     }
 
+    /**
+     * Metodo para obtener un archivo del laberinto y meterlo en la gui.
+     * @throws IOException
+     */
     private void obtenerArchivo() throws IOException
     {
         String ruta = textAreaArchivo.getText();

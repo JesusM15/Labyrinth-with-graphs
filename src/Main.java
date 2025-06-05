@@ -12,6 +12,5 @@ public class Main {
 //
 //        labyrinthSolver.AstarAlgorithm(labyrinth);
 
-    } // dsahjdksakd
-    // simon
+    }
 }
