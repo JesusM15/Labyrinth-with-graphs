@@ -140,13 +140,17 @@ import java.io.IOException;
              node.setY(y);
          }
 
+        // hasta esta parte del metodo nos vimos atorados, por lo que recurrimos a pedirle idea a chatgpt
+         // basicamente nos dio la idea y con eso ya supimos como rhacer que se generara siempre un camino
+         // esto se hace por medio del algoritmo de busqueda en profundidad por eso se utiliza una pila
+         // simplemente hace un camino del nodo 0 al nodo final realizando conexiones entre los vecinos de forma aleatoria.
          boolean[] visitado = new boolean[totalNodes];
          Stack<Integer> pila = new Stack<>();
          pila.push(0);
-         visitado[0] = true;
+         visitado[0] = true; // el nodo de inicio se marca como visitado
 
          while (!pila.isEmpty()) {
-             int actual = pila.peek();
+             int actual = pila.peek(); // se observa el nodo eb la cima de la pila
              Node nodoActual = labyrinth.getNode(actual);
 
              List<Integer> vecinos = new ArrayList<>();
@@ -154,32 +158,34 @@ import java.io.IOException;
              int x = nodoActual.getX();
              int y = nodoActual.getY();
 
+             // aqui se busca si algun nodo que no se ha sido visitado e svecino y se agrega a los vecuinos del nodo
              if (x > 0 && !visitado[actual - 1]) vecinos.add(actual - 1);
              if (x < cols - 1 && !visitado[actual + 1]) vecinos.add(actual + 1);
              if (y > 0 && !visitado[actual - cols]) vecinos.add(actual - cols);
              if (y < rows - 1 && !visitado[actual + cols]) vecinos.add(actual + cols);
 
+             // si hay vecinos entonces se elige uno aleatorio de los nodos vecinos
+             // para poder conectarlo al nodo actual
              if (!vecinos.isEmpty()) {
                  int elegido = vecinos.get(rand.nextInt(vecinos.size()));
                  labyrinth.addEdge(actual, elegido);
                  visitado[elegido] = true;
-                 pila.push(elegido);
+                 pila.push(elegido); // se agrega a la pila y como visitado para indicar que ahora continuaremos el camino desde este nodo
              } else {
                  pila.pop();
              }
          }
 
+         // se agregan conexioness al hacer entre nodos para hacer mas realista el laberinto.
          for (int i = 0; i < totalNodes; i++) {
              Node node = labyrinth.getNode(i);
              int x = node.getX();
              int y = node.getY();
 
-             // Conectar derecha con probabilidad
-             if (x < cols - 1 && rand.nextInt(5) == 0) { // 20% chance extra
+             if (x < cols - 1 && rand.nextInt(5) == 0) {
                  labyrinth.addEdge(i, i + 1);
              }
 
-             // Conectar abajo con probabilidad
              if (y < rows - 1 && rand.nextInt(5) == 0) {
                  labyrinth.addEdge(i, i + cols);
              }
